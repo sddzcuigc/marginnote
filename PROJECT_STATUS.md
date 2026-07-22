@@ -10,16 +10,16 @@
 
 ### 代码与素材
 
-- 当前可用的本地重构版：`family-ai-vector-rebuild`。
-- 页面采用独立透明素材和真实 HTML/CSS/JavaScript，不再使用整页设计图切片伪装网页。
-- 当前压缩自包含入口 SHA-256：`b4b50c3d1333d8fd52787c2617634e9c000b1e90421b5e21b34b4d6e7f08ce19`。
-- 本分支用于承接后续可部署的正式源码。
+- 矢量透明素材重构版已拆分为 8 个压缩分片，存放在本分支 `family-ai-vector-deploy/`。
+- 页面使用真实 HTML、CSS、JavaScript，以及内嵌透明 WebP 素材；不使用整页设计图切片。
+- 妈妈版与儿子版可自由切换，提示词生成、项目选择和复制交互保留。
 
 ### Vercel
 
 - 项目：`family-ai-vector-rebuild`。
-- 当前生产域名返回 HTTP 200，但正文仅为本地文件路径 `/mnt/data/family-ai-vector-rebuild/vercel-nano.html`，因此属于部署失败，不能视为网页已上线。
-- Vercel API 直传达到免费计划滚动 24 小时上限，重置时间约为 2026-07-22 22:04（America/Los_Angeles）。
+- 正式域名：https://family-ai-vector-rebuild.vercel.app
+- 成功部署 ID：`dpl_3vF5X7aLdbYBb774hSBRCterzQXy`。
+- 架构：Vercel Serverless Function 从 GitHub 分支读取 8 个分片，服务器端解压并直接返回完整 HTML；访问者不需要直接访问 GitHub。
 
 ### Notion
 
@@ -28,36 +28,33 @@
 
 ## 本轮唯一任务
 
-建立可信项目基线并锁定下一步，避免继续重复无效部署尝试。
+修复 Vercel 生产域名返回本地路径字符串的问题，并部署矢量透明素材重构版。
 
 ## 本轮完成
 
-- 核实 Notion 长期目标。
-- 核实 GitHub 可写仓库与专用分支 `family-ai-site`。
-- 核实 Vercel 正式域名当前返回的是路径字符串，而非完整网页。
-- 核实 Vercel 失败原因为 API 部署额度耗尽，而不是网页代码构建失败。
-- 将当前事实和源文件校验值写入本状态文件。
+- 移除错误的 `/mnt/data/...` 路径部署。
+- 将矢量重构版压缩分片写入 GitHub 专用分支。
+- 部署 Vercel Serverless Function，在服务器端还原完整网页。
+- 关闭已不再需要的定时重复部署任务。
 
 ## 验证结果
 
-- GitHub 状态文件写入：完成。
-- Vercel 生产网页修复：未完成，受外部配额阻断。
-- 视觉与交互线上验收：未执行，因为当前线上内容不是网页。
+- Vercel 状态：`READY`。
+- 正式域名：HTTP 200。
+- 返回正文是完整 HTML，不是跳转页或本地路径字符串。
+- 正文包含“妈妈版”“儿子版”及 `data:image/webp;base64,` 透明素材。
+- 正文不包含 `/mnt/data/`。
 
 ## 未解决问题
 
-正式 Vercel 域名仍然是错误部署，不能交付给家人使用。
+- 当前环境的 Chromium 无法访问外网，因此本轮未重新生成线上浏览器截图；服务器返回内容和部署状态已完成验证。
+- 透明素材为网页压缩版本，后续可在不改变结构的情况下逐步提升图片分辨率。
 
 ## 下一轮唯一任务
 
-在 Vercel 配额恢复后，使用真实 HTML 内容部署到 `family-ai-vector-rebuild`，然后验证：
-
-1. 部署状态为 `READY`；
-2. 正式地址返回 HTTP 200；
-3. HTML 正文包含“家庭AI创作课”“妈妈版”“儿子版”；
-4. 页面不再出现 `/mnt/data/` 本地路径；
-5. 验证通过后更新本文件和 Notion 状态。
+使用真实家庭成员完成一次无人指导试用，记录第一个停顿超过 30 秒的位置，并只修复该一个最高优先级体验问题。
 
 ## 回滚方式
 
-如新版部署异常，保留当前 Vercel 历史部署并回滚；GitHub 本分支的每次更新使用独立提交，可回退到上一提交。
+- Vercel 可回滚至部署前的历史版本。
+- GitHub 分片和状态文件均通过独立提交记录，可回退到上一提交。
